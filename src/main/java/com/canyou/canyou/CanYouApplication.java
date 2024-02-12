@@ -1,0 +1,15 @@
+package com.canyou.canyou;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class CanYouApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(CanYouApplication.class, args);
+	}
+
+}
