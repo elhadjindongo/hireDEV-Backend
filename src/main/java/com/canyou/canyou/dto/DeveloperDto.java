@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Data
@@ -19,7 +20,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @ToString
-public class DeveloperDto {
+public class DeveloperDto implements Serializable {
     private Long id;
     @NotBlank(message = ErrorMsg.CAN_NOT_BE_BLANK_ERROR_MSG)
     @Pattern(regexp = SharedConst.NAME_REGEX, message = ErrorMsg.CAN_NOT_CONTAIN_SPECIAL_CHAR_ERROR_MSG)

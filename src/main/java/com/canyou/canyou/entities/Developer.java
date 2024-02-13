@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
@@ -19,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @ToString
-public class Developer {
+public class Developer implements Serializable {
     @Id
     @GeneratedValue
     private Long id;

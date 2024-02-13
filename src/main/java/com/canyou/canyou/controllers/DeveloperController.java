@@ -79,7 +79,7 @@ public class DeveloperController {
         return developerService.getAvailableDev(availabilityValue);
     }
 
-    //get by specialities todo: buggy
+    //todo: get by specialities is buggy
     public List<DeveloperDto> getBySpecialities(SpecialitiesDto specialitiesDto) {
         return this.developerService.getDevBySpecialities(specialitiesDto);
     }
