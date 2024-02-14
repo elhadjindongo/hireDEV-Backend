@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.models.examples.Example;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +63,7 @@ public class DeveloperController {
     }
 
     private List<DeveloperDto> getDevsByMinimumExperience(int yearsOfExperience) {
-        return developerService.getDevsByMinimunExperience(yearsOfExperience);
+        return developerService.getDevsByMinimumExperience(yearsOfExperience);
     }
 
     //getting dev that are available or not
@@ -100,12 +99,12 @@ public class DeveloperController {
     @Operation(summary = "save one Developer ",
             requestBody =
             @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
-            @Content(examples = @ExampleObject(value = ObjectDataExemple.IMPUTE_EXEMPLE)))
+            @Content(examples = @ExampleObject(value = ObjectDataExemple.SAVE_EXEMPLE)))
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    content = @Content(mediaType = "application/json", schema =
-                    @Schema(implementation = DeveloperDto.class))),
+                    content = @Content(mediaType = "application/json", examples = @ExampleObject(value = ObjectDataExemple.SAVE_EXEMPLE)
+                    )),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content)})
     @PostMapping
@@ -115,14 +114,14 @@ public class DeveloperController {
 
     @Operation(summary = "modify a Developer by its id",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
-            @Content(examples = @ExampleObject(value = ObjectDataExemple.IMPUTE_EXEMPLE))))
+            @Content(examples = @ExampleObject(value = ObjectDataExemple.EDIT_EXEMPLE))))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = DeveloperDto.class))),
             @ApiResponse(responseCode = "404", description = "Developer not found",
                     content = @Content(examples = @ExampleObject(value = ObjectDataExemple.NOT_FOUND)))})
     @PutMapping("/{id}")
-    public DeveloperDto putOne(@PathVariable Long id, @RequestBody DeveloperDto developer) {
+    public DeveloperDto putOne(@PathVariable Long id, @Valid @RequestBody DeveloperDto developer) {
         return developerService.modifyOne(id, developer);
     }
 

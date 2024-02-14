@@ -14,7 +14,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class) // mapstruct & JUnit 5
+@ExtendWith(SpringExtension.class) // which is used to integrate TestContext Framework into JUnit5
 @ContextConfiguration(classes = {
         DeveloperMapperImpl.class
 })

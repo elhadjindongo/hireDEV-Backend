@@ -11,7 +11,23 @@ public class ObjectDataExemple {
                             "error": " Developer with id 123 is not found !"
                        }
                     """;
-    public static final String IMPUTE_EXEMPLE =
+    public static final String SAVE_EXEMPLE =
+            """
+                        {
+                          "fullName": "Sarah Smith",
+                          "role": "Front Developer",
+                          "yearsOfExperiences": 8,
+                          "availability": "NOW",
+                          "specialities": [
+                            "HTML / CSS",
+                            "Angular",
+                            "React",
+                            "JS / TS",
+                            "Docker"
+                          ]
+                        }
+                    """;
+    public static final String EDIT_EXEMPLE =
             """
                         {
                           "fullName": "John Doe",
@@ -21,8 +37,8 @@ public class ObjectDataExemple {
                           "specialities": [
                             "Java",
                             "Spring / Spring Boot",
-                            "Angular",
-                            "Kubernates",
+                            "React",
+                            "Kubernetes",
                             "Openshift",
                             "Jenkins",
                             "Docker"

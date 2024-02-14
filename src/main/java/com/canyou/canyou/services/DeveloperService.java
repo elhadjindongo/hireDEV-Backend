@@ -9,7 +9,6 @@ import com.canyou.canyou.dto.SpecialitiesDto;
 import com.canyou.canyou.enums.Availability;
 
 import java.util.List;
-import java.util.Set;
 
 public interface DeveloperService {
     //getting all dev
@@ -23,7 +22,7 @@ public interface DeveloperService {
     //delete one dev
     void deleteOne(Long id);
 
-    List<DeveloperDto> getDevsByMinimunExperience(int totalYearsOfExperience);
+    List<DeveloperDto> getDevsByMinimumExperience(int totalYearsOfExperience);
 
     List<DeveloperDto> getAvailableDev(Availability availability);
     List<DeveloperDto> getDevBySpecialities(SpecialitiesDto specialities);

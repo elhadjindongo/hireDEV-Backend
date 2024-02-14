@@ -52,7 +52,7 @@ public class DeveloperServiceImpl implements DeveloperService {
     }
 
     @Override
-    public List<DeveloperDto> getDevsByMinimunExperience(int totalYearsOfExperience) {
+    public List<DeveloperDto> getDevsByMinimumExperience(int totalYearsOfExperience) {
         List<Developer> allByYearsOfExperiencesGreaterThanEqual = developerRepository.findAllByYearsOfExperiencesGreaterThanEqual(totalYearsOfExperience);
         return allByYearsOfExperiencesGreaterThanEqual.stream().map(developerMapper::toDto).toList();
     }

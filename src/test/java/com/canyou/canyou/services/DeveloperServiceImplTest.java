@@ -3,6 +3,7 @@ package com.canyou.canyou.services;
 import com.canyou.canyou.dto.DeveloperDto;
 import com.canyou.canyou.dto.mapper.DeveloperMapper;
 import com.canyou.canyou.entities.Developer;
+import com.canyou.canyou.enums.Availability;
 import com.canyou.canyou.exceptions.RessourceNotFoundException;
 import com.canyou.canyou.repositories.DeveloperRepository;
 import com.canyou.canyou.utils.ConstValues;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,73 +45,22 @@ class DeveloperServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        devsDTO = List.of(
-                DeveloperDto.builder()
-                        .id(ConstValues.ID)
-                        .fullName(ConstValues.FULL_NAME)
-                        .availability(ConstValues.AVAILABILITY.name())
-                        .role(ConstValues.JAVA_DEVELOPER)
-                        .specialities(ConstValues.SPECIALITIES)
-                        .yearsOfExperiences(ConstValues.YEARS_OF_EXPERIENCES)
-                        .build(),
-                DeveloperDto.builder()
-                        .id(ConstValues.ID)
-                        .fullName(ConstValues.FULL_NAME_1)
-                        .availability(ConstValues.AVAILABILITY_1.name())
-                        .role(ConstValues.JS_DEVELOPER)
-                        .specialities(ConstValues.SPECIALITIES_1)
-                        .yearsOfExperiences(ConstValues.YEARS_OF_EXPERIENCES_1)
-                        .build(),
-                DeveloperDto.builder()
-                        .id(ConstValues.ID_2)
-                        .fullName(ConstValues.FULL_NAME_2)
-                        .availability(ConstValues.AVAILABILITY.name())
-                        .role(ConstValues.PYTHON_DEVELOPER)
-                        .specialities(ConstValues.SPECIALITIES_2)
-                        .yearsOfExperiences(ConstValues.YEARS_OF_EXPERIENCES_2)
-                        .build()
-        );
-        devsEntity = List.of(
-                Developer.builder()
-                        .id(ConstValues.ID)
-                        .fullName(ConstValues.FULL_NAME)
-                        .availability(ConstValues.AVAILABILITY)
-                        .role(ConstValues.JAVA_DEVELOPER)
-                        .specialities(ConstValues.SPECIALITIES)
-                        .yearsOfExperiences(ConstValues.YEARS_OF_EXPERIENCES)
-                        .build(),
-                Developer.builder()
-                        .id(ConstValues.ID_1)
-                        .fullName(ConstValues.FULL_NAME_1)
-                        .availability(ConstValues.AVAILABILITY_1)
-                        .role(ConstValues.JS_DEVELOPER)
-                        .specialities(ConstValues.SPECIALITIES_1)
-                        .yearsOfExperiences(ConstValues.YEARS_OF_EXPERIENCES_1)
-                        .build(),
-                Developer.builder()
-                        .id(ConstValues.ID_2)
-                        .fullName(ConstValues.FULL_NAME_2)
-                        .availability(ConstValues.AVAILABILITY)
-                        .role(ConstValues.PYTHON_DEVELOPER)
-                        .specialities(ConstValues.SPECIALITIES_2)
-                        .yearsOfExperiences(ConstValues.YEARS_OF_EXPERIENCES_2)
-                        .build()
-        );
+        devsDTO = List.of(DeveloperDto.builder().id(ConstValues.ID).fullName(ConstValues.FULL_NAME).availability(ConstValues.AVAILABILITY.name()).role(ConstValues.JAVA_DEVELOPER).specialities(ConstValues.SPECIALITIES).yearsOfExperiences(ConstValues.YEARS_OF_EXPERIENCES).build(), DeveloperDto.builder().id(ConstValues.ID).fullName(ConstValues.FULL_NAME_1).availability(ConstValues.AVAILABILITY_1.name()).role(ConstValues.JS_DEVELOPER).specialities(ConstValues.SPECIALITIES_1).yearsOfExperiences(ConstValues.YEARS_OF_EXPERIENCES_1).build(), DeveloperDto.builder().id(ConstValues.ID_2).fullName(ConstValues.FULL_NAME_2).availability(ConstValues.AVAILABILITY.name()).role(ConstValues.PYTHON_DEVELOPER).specialities(ConstValues.SPECIALITIES_2).yearsOfExperiences(ConstValues.YEARS_OF_EXPERIENCES_2).build());
+        devsEntity = List.of(Developer.builder().id(ConstValues.ID).fullName(ConstValues.FULL_NAME).availability(ConstValues.AVAILABILITY).role(ConstValues.JAVA_DEVELOPER).specialities(ConstValues.SPECIALITIES).yearsOfExperiences(ConstValues.YEARS_OF_EXPERIENCES).build(), Developer.builder().id(ConstValues.ID_1).fullName(ConstValues.FULL_NAME_1).availability(ConstValues.AVAILABILITY_1).role(ConstValues.JS_DEVELOPER).specialities(ConstValues.SPECIALITIES_1).yearsOfExperiences(ConstValues.YEARS_OF_EXPERIENCES_1).build(), Developer.builder().id(ConstValues.ID_2).fullName(ConstValues.FULL_NAME_2).availability(ConstValues.AVAILABILITY).role(ConstValues.PYTHON_DEVELOPER).specialities(ConstValues.SPECIALITIES_2).yearsOfExperiences(ConstValues.YEARS_OF_EXPERIENCES_2).build());
     }
 
     @Test
     void getAll() {
         //when
         Mockito.when(repository.findAll()).thenReturn(devsEntity);
-        IntStream.range(ZERO, devsEntity.size())
-                .forEach(i -> Mockito.when(mapper.toDto(devsEntity.get(i))).thenReturn(devsDTO.get(i)));
+        IntStream.range(ZERO, devsEntity.size()).forEach(i -> Mockito.when(mapper.toDto(devsEntity.get(i))).thenReturn(devsDTO.get(i)));
         //perform
         List<DeveloperDto> result = service.getAll();
         //assert
         Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findAll();
         assertEquals(result.size(), devsDTO.size());
         IntStream.range(ZERO, result.size()).forEach(i -> {
-            assertOneDev(result.get(i), i);
+            assertOneDev(result.get(i), devsDTO.get(i));
         });
 
     }
@@ -123,7 +74,7 @@ class DeveloperServiceImplTest {
         DeveloperDto result = service.getOne(ConstValues.ID);
         //assert
         Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findById(ConstValues.ID);
-        assertOneDev(result, ZERO);
+        assertOneDev(result, devsDTO.get(ZERO));
     }
 
     @Test
@@ -153,7 +104,7 @@ class DeveloperServiceImplTest {
         DeveloperDto result = service.saveOne(toSave);
         //assert
         Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).save(this.devsEntity.get(ZERO));
-        assertOneDev(result, ZERO);
+        assertOneDev(result, this.devsDTO.get(ZERO));
     }
 
     @Test
@@ -170,31 +121,73 @@ class DeveloperServiceImplTest {
         //assert
         Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findById(ConstValues.ID);
         Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).save(this.devsEntity.get(ZERO));
-        assertOneDev(result, ZERO);
+        assertOneDev(result, this.devsDTO.get(ZERO));
     }
 
     @Test
-    void getDevsByMinimunExperience() {
+    void getDevsByMinimumExperience() {
+        List<Developer> devStub = devsEntity.stream().filter(d -> d.getYearsOfExperiences() >= ConstValues.YEARS_OF_EXPERIENCES_2).toList();
+        List<DeveloperDto> devDtoStub = devsDTO.stream().filter(d -> d.getYearsOfExperiences() >= ConstValues.YEARS_OF_EXPERIENCES_2).toList();
+        //when
+        Mockito.when(repository.findAllByYearsOfExperiencesGreaterThanEqual(ConstValues.YEARS_OF_EXPERIENCES_2)).thenReturn(devStub);
+        IntStream.range(ZERO, devStub.size()).forEach(i -> Mockito.when(mapper.toDto(devStub.get(i))).thenReturn(devDtoStub.get(i)));
+        //perform
+        List<DeveloperDto> result = service.getDevsByMinimumExperience(ConstValues.YEARS_OF_EXPERIENCES_2);
+        //assert
+        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findAllByYearsOfExperiencesGreaterThanEqual(ConstValues.YEARS_OF_EXPERIENCES_2);
+        assertEquals(devDtoStub.size(), result.size());
+        IntStream.range(ZERO, devStub.size()).forEach(i -> {
+            assertOneDev(result.get(i), devDtoStub.get(i));
+        });
+
     }
 
     @Test
     void getAvailableDev() {
+        List<Developer> availableDevStub = devsEntity.stream().filter(d -> d.getAvailability().equals(Availability.NOW)).toList();
+        List<DeveloperDto> availableDevDtoStub = devsDTO.stream().filter(d -> d.getAvailability().equals(Availability.NOW.name())).toList();
+        //when
+        Mockito.when(repository.findAllByAvailability(Availability.NOW)).thenReturn(availableDevStub);
+        IntStream.range(ZERO, availableDevStub.size()).forEach(i -> Mockito.when(mapper.toDto(availableDevStub.get(i))).thenReturn(availableDevDtoStub.get(i)));
+        //perform
+        List<DeveloperDto> result = service.getAvailableDev(Availability.NOW);
+        //assert
+        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findAllByAvailability(Availability.NOW);
+        assertEquals(availableDevDtoStub.size(), result.size());
+        IntStream.range(ZERO, availableDevStub.size()).forEach(i -> {
+            assertOneDev(result.get(i), availableDevDtoStub.get(i));
+        });
     }
+
 
     @Test
     void getDevBySpecialities() {
+        fail("to be implemented !!!");
     }
 
     @Test
     void deleteOne() {
+        //when
+        Mockito.doNothing().when(repository).deleteById(ConstValues.ID);
+        Mockito.when(repository.findById(ConstValues.ID)).thenReturn(Optional.of(this.devsEntity.get(ZERO)));
+        //perform
+        service.deleteOne(ConstValues.ID);
+        //assert
+        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).deleteById(ConstValues.ID);
     }
 
-    private void assertOneDev(DeveloperDto result, int zero) {
-        assertEquals(result.getId(), devsDTO.get(zero).getId());
-        assertEquals(result.getFullName(), devsDTO.get(zero).getFullName());
-        assertEquals(result.getRole(), devsDTO.get(zero).getRole());
-        assertEquals(result.getAvailability(), devsDTO.get(zero).getAvailability());
-        assertEquals(result.getSpecialities(), devsDTO.get(zero).getSpecialities());
-        assertEquals(result.getYearsOfExperiences(), devsDTO.get(zero).getYearsOfExperiences());
+    /**
+     * Verify that all field in @param expected is equal to value in corresponding field in @param actual
+     *
+     * @param expected the expected developerDto object value
+     * @param actual   the actual value of developerDto object
+     */
+    private void assertOneDev(DeveloperDto expected, DeveloperDto actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getFullName(), actual.getFullName());
+        assertEquals(expected.getRole(), actual.getRole());
+        assertEquals(expected.getAvailability(), actual.getAvailability());
+        assertEquals(expected.getSpecialities(), actual.getSpecialities());
+        assertEquals(expected.getYearsOfExperiences(), actual.getYearsOfExperiences());
     }
 }
