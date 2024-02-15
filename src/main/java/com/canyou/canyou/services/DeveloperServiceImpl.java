@@ -5,7 +5,6 @@
 package com.canyou.canyou.services;
 
 import com.canyou.canyou.dto.DeveloperDto;
-import com.canyou.canyou.dto.SpecialitiesDto;
 import com.canyou.canyou.dto.mapper.DeveloperMapper;
 import com.canyou.canyou.entities.Developer;
 import com.canyou.canyou.enums.Availability;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -53,25 +51,14 @@ public class DeveloperServiceImpl implements DeveloperService {
 
     @Override
     public List<DeveloperDto> getDevsByMinimumExperience(int totalYearsOfExperience) {
-        List<Developer> allByYearsOfExperiencesGreaterThanEqual = developerRepository.findAllByYearsOfExperiencesGreaterThanEqual(totalYearsOfExperience);
+        List<Developer> allByYearsOfExperiencesGreaterThanEqual = developerRepository.findByYearsOfExperiencesGreaterThanEqual(totalYearsOfExperience);
         return allByYearsOfExperiencesGreaterThanEqual.stream().map(developerMapper::toDto).toList();
     }
 
     @Override
     public List<DeveloperDto> getAvailableDev(Availability availability) {
-        List<Developer> allByAvailability = developerRepository.findAllByAvailability(availability);
+        List<Developer> allByAvailability = developerRepository.findByAvailability(availability);
         return allByAvailability.stream().map(developerMapper::toDto).toList();
-    }
-
-    @Override
-    public List<DeveloperDto> getDevBySpecialities(SpecialitiesDto specialities) {
-        //empty means all specialities
-        if (specialities.getSpecialities().isEmpty()) {
-            return this.getAll();
-        } else {
-            List<Developer> allBySpecialities = this.developerRepository.findAllBySpecialitiesIn(specialities.getSpecialities());
-            return allBySpecialities.stream().map(developerMapper::toDto).toList();
-        }
     }
 
     @Override

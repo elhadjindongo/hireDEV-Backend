@@ -2,22 +2,18 @@ package com.canyou.canyou.dto.mapper;
 
 import com.canyou.canyou.dto.DeveloperDto;
 import com.canyou.canyou.entities.Developer;
-import com.canyou.canyou.enums.Availability;
 import com.canyou.canyou.utils.ConstValues;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.Set;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class) // which is used to integrate TestContext Framework into JUnit5
-@ContextConfiguration(classes = {
-        DeveloperMapperImpl.class
-})
+//@ExtendWith(SpringExtension.class) // which is used to integrate TestContext Framework into JUnit5
+//@ContextConfiguration(classes = {
+//        DeveloperMapperImpl.class
+//}) IS THE SAME AS BELOW
+@SpringJUnitConfig(DeveloperMapperImpl.class)
 class DeveloperMapperTest {
     @Autowired
     DeveloperMapper mapper;

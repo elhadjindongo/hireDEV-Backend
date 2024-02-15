@@ -5,7 +5,6 @@
 package com.canyou.canyou.controllers;
 
 import com.canyou.canyou.dto.DeveloperDto;
-import com.canyou.canyou.dto.SpecialitiesDto;
 import com.canyou.canyou.enums.Availability;
 import com.canyou.canyou.exceptions.IllegalValueException;
 import com.canyou.canyou.services.DeveloperService;
@@ -42,21 +41,17 @@ public class DeveloperController {
                     content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = DeveloperDto.class)))),
     })
     @GetMapping
-    public List<DeveloperDto> getAll(@RequestBody(required = false) SpecialitiesDto specialitiesDto,
-                                     @RequestParam(required = false) String availability,
+    public List<DeveloperDto> getAll(@RequestParam(required = false) String availability,
                                      @RequestParam(required = false) String experience) {
         if (null != availability) {
             return getAvailableDevs(availability);
         } else if (null != experience) {
-            int yearOfExperience = 0;
             try {
-                yearOfExperience = Integer.parseInt(experience);
+                int yearOfExperience = Integer.parseInt(experience);
+                return getDevsByMinimumExperience(yearOfExperience);
             } catch (NumberFormatException e) {
                 throw new IllegalValueException(ILLEGAL_EXPERIENCE_MSG, EXPERIENCE_LABEL);
             }
-            return getDevsByMinimumExperience(yearOfExperience);
-        } else if (null != specialitiesDto) {
-            return this.getBySpecialities(specialitiesDto);
         } else {
             return developerService.getAll();
         }
@@ -76,11 +71,6 @@ public class DeveloperController {
         }
 
         return developerService.getAvailableDev(availabilityValue);
-    }
-
-    //todo: get by specialities is buggy
-    public List<DeveloperDto> getBySpecialities(SpecialitiesDto specialitiesDto) {
-        return this.developerService.getDevBySpecialities(specialitiesDto);
     }
 
     @Operation(summary = "get one Developer by its id")
@@ -117,7 +107,7 @@ public class DeveloperController {
             @Content(examples = @ExampleObject(value = ObjectDataExemple.EDIT_EXEMPLE))))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = DeveloperDto.class))),
+                    content = @Content(mediaType = "application/json", examples = @ExampleObject(value = ObjectDataExemple.EDIT_EXEMPLE))),
             @ApiResponse(responseCode = "404", description = "Developer not found",
                     content = @Content(examples = @ExampleObject(value = ObjectDataExemple.NOT_FOUND)))})
     @PutMapping("/{id}")

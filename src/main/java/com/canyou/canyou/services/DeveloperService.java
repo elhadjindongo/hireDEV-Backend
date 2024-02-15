@@ -5,7 +5,6 @@
 package com.canyou.canyou.services;
 
 import com.canyou.canyou.dto.DeveloperDto;
-import com.canyou.canyou.dto.SpecialitiesDto;
 import com.canyou.canyou.enums.Availability;
 
 import java.util.List;
@@ -25,7 +24,6 @@ public interface DeveloperService {
     List<DeveloperDto> getDevsByMinimumExperience(int totalYearsOfExperience);
 
     List<DeveloperDto> getAvailableDev(Availability availability);
-    List<DeveloperDto> getDevBySpecialities(SpecialitiesDto specialities);
 
     //todo: available and exp
     //todo: available and specialities

@@ -9,12 +9,19 @@ import com.canyou.canyou.enums.Availability;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Set;
 
 public interface DeveloperRepository extends JpaRepository<Developer, Long> {
 
 
-    List<Developer> findAllByAvailability(Availability availability);
-    List<Developer> findAllByYearsOfExperiencesGreaterThanEqual(int number);
-    List<Developer> findAllBySpecialitiesIn(Set<String> specialities);
+    List<Developer> findByAvailability(Availability availability);
+
+    List<Developer> findByYearsOfExperiencesGreaterThanEqual(int number);
+
+    /*
+     * find dev that have the given speciality
+     *
+     * @param speciality a particular speciality
+     * @return all dev that have the given speciality in their specialities attribute
+     */
+//    List<Developer> findBySpecialitiesLike(String speciality);
 }

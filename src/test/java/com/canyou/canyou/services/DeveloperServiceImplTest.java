@@ -9,7 +9,6 @@ import com.canyou.canyou.repositories.DeveloperRepository;
 import com.canyou.canyou.utils.ConstValues;
 import com.canyou.canyou.utils.ErrorMsg;
 import org.apache.commons.lang3.SerializationUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,17 +16,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.logging.LogLevel;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class DeveloperServiceImplTest {
@@ -59,9 +53,7 @@ class DeveloperServiceImplTest {
         //assert
         Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findAll();
         assertEquals(result.size(), devsDTO.size());
-        IntStream.range(ZERO, result.size()).forEach(i -> {
-            assertOneDev(result.get(i), devsDTO.get(i));
-        });
+        IntStream.range(ZERO, result.size()).forEach(i -> assertOneDev(result.get(i), devsDTO.get(i)));
 
     }
 
@@ -129,16 +121,14 @@ class DeveloperServiceImplTest {
         List<Developer> devStub = devsEntity.stream().filter(d -> d.getYearsOfExperiences() >= ConstValues.YEARS_OF_EXPERIENCES_2).toList();
         List<DeveloperDto> devDtoStub = devsDTO.stream().filter(d -> d.getYearsOfExperiences() >= ConstValues.YEARS_OF_EXPERIENCES_2).toList();
         //when
-        Mockito.when(repository.findAllByYearsOfExperiencesGreaterThanEqual(ConstValues.YEARS_OF_EXPERIENCES_2)).thenReturn(devStub);
+        Mockito.when(repository.findByYearsOfExperiencesGreaterThanEqual(ConstValues.YEARS_OF_EXPERIENCES_2)).thenReturn(devStub);
         IntStream.range(ZERO, devStub.size()).forEach(i -> Mockito.when(mapper.toDto(devStub.get(i))).thenReturn(devDtoStub.get(i)));
         //perform
         List<DeveloperDto> result = service.getDevsByMinimumExperience(ConstValues.YEARS_OF_EXPERIENCES_2);
         //assert
-        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findAllByYearsOfExperiencesGreaterThanEqual(ConstValues.YEARS_OF_EXPERIENCES_2);
+        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findByYearsOfExperiencesGreaterThanEqual(ConstValues.YEARS_OF_EXPERIENCES_2);
         assertEquals(devDtoStub.size(), result.size());
-        IntStream.range(ZERO, devStub.size()).forEach(i -> {
-            assertOneDev(result.get(i), devDtoStub.get(i));
-        });
+        IntStream.range(ZERO, devStub.size()).forEach(i -> assertOneDev(result.get(i), devDtoStub.get(i)));
 
     }
 
@@ -147,16 +137,14 @@ class DeveloperServiceImplTest {
         List<Developer> availableDevStub = devsEntity.stream().filter(d -> d.getAvailability().equals(Availability.NOW)).toList();
         List<DeveloperDto> availableDevDtoStub = devsDTO.stream().filter(d -> d.getAvailability().equals(Availability.NOW.name())).toList();
         //when
-        Mockito.when(repository.findAllByAvailability(Availability.NOW)).thenReturn(availableDevStub);
+        Mockito.when(repository.findByAvailability(Availability.NOW)).thenReturn(availableDevStub);
         IntStream.range(ZERO, availableDevStub.size()).forEach(i -> Mockito.when(mapper.toDto(availableDevStub.get(i))).thenReturn(availableDevDtoStub.get(i)));
         //perform
         List<DeveloperDto> result = service.getAvailableDev(Availability.NOW);
         //assert
-        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findAllByAvailability(Availability.NOW);
+        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findByAvailability(Availability.NOW);
         assertEquals(availableDevDtoStub.size(), result.size());
-        IntStream.range(ZERO, availableDevStub.size()).forEach(i -> {
-            assertOneDev(result.get(i), availableDevDtoStub.get(i));
-        });
+        IntStream.range(ZERO, availableDevStub.size()).forEach(i -> assertOneDev(result.get(i), availableDevDtoStub.get(i)));
     }
 
 
