@@ -10,8 +10,9 @@ import lombok.Getter;
 public class IllegalValueException extends RuntimeException {
 
     private final String field;
-    public IllegalValueException(String message,String field) {
-            super(message);
-            this.field = field;
-        }
+
+    public IllegalValueException(String message, String field) {
+        super(message);
+        this.field = field;
+    }
 }

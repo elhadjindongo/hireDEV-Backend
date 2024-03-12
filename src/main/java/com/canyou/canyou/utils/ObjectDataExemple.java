@@ -4,11 +4,19 @@
 
 package com.canyou.canyou.utils;
 
+import static com.canyou.canyou.utils.SharedConst.AVAILABILITY_LABEL;
+
 public class ObjectDataExemple {
     public static final String NOT_FOUND =
             """
                        {
                             "error": " Developer with id 123 is not found !"
+                       }
+                    """;
+    public static final String BAD_REQUEST =
+            """
+                       {
+                            "availability": "You should provide either NOW or SOON for availability"
                        }
                     """;
     public static final String SAVE_EXEMPLE =

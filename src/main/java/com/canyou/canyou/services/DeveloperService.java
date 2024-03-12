@@ -25,6 +25,7 @@ public interface DeveloperService {
 
     List<DeveloperDto> getAvailableDev(Availability availability);
 
+    //todo: by specialities
     //todo: available and exp
     //todo: available and specialities
     //todo: exp and specialities

@@ -8,4 +8,7 @@ public class SharedConst {
     public static final String NAME_REGEX = "^[ a-zA-Z,.'-]+$";//can contain alphabet, space comma dot apostrophe and hyphen
     public static final String ROLE_REGEX = "^[ \\w/,.-]+$"; //can contain alphanumeric, space comma slash and hyphen
     public static final String AVAILABILITY_REGEX = "NOW|SOON";
+
+    public static final String EXPERIENCE_LABEL = "experience";
+    public static final String AVAILABILITY_LABEL = "availability";
 }

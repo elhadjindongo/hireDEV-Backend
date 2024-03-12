@@ -26,4 +26,11 @@ public class ConstValues {
     public static final long ID = 1L;
     public static final long ID_1 = 2L;
     public static final long ID_2 = 3L;
+
+
+    public static final int ZERO = 0;
+    public static final int ONE = 1;
+
+
+
 }

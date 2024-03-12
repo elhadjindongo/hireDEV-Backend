@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,19 +27,21 @@ import java.util.List;
 
 import static com.canyou.canyou.utils.ErrorMsg.AVAILABILITY_ERROR_MSG;
 import static com.canyou.canyou.utils.ErrorMsg.ILLEGAL_EXPERIENCE_MSG;
+import static com.canyou.canyou.utils.SharedConst.AVAILABILITY_LABEL;
+import static com.canyou.canyou.utils.SharedConst.EXPERIENCE_LABEL;
 
 @RestController
 @RequestMapping("/developers")
 @RequiredArgsConstructor
 public class DeveloperController {
     private final DeveloperService developerService;
-    private static final String EXPERIENCE_LABEL = "experience";
-    private static final String AVAILABILITY_LABEL = "availability";
 
     @Operation(summary = "get all Developers")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = DeveloperDto.class)))),
+            @ApiResponse(responseCode = "400", description = "When param is malformed",
+                    content = @Content(examples = @ExampleObject(value = ObjectDataExemple.BAD_REQUEST)))
     })
     @GetMapping
     public List<DeveloperDto> getAll(@RequestParam(required = false) String availability,
@@ -48,8 +51,11 @@ public class DeveloperController {
         } else if (null != experience) {
             try {
                 int yearOfExperience = Integer.parseInt(experience);
+                if (yearOfExperience < 0) {
+                    throw new Exception();
+                }
                 return getDevsByMinimumExperience(yearOfExperience);
-            } catch (NumberFormatException e) {
+            } catch (Exception e) {
                 throw new IllegalValueException(ILLEGAL_EXPERIENCE_MSG, EXPERIENCE_LABEL);
             }
         } else {
@@ -62,7 +68,7 @@ public class DeveloperController {
     }
 
     //getting dev that are available or not
-    public List<DeveloperDto> getAvailableDevs(String availability) {
+    private List<DeveloperDto> getAvailableDevs(String availability) {
         Availability availabilityValue = null;
         try {
             availabilityValue = Availability.valueOf(availability.toUpperCase());
@@ -92,27 +98,27 @@ public class DeveloperController {
             @Content(examples = @ExampleObject(value = ObjectDataExemple.SAVE_EXEMPLE)))
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
+            @ApiResponse(responseCode = "201",
                     content = @Content(mediaType = "application/json", examples = @ExampleObject(value = ObjectDataExemple.SAVE_EXEMPLE)
                     )),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content)})
     @PostMapping
-    public DeveloperDto saveOne(@Valid @RequestBody DeveloperDto developer) {
-        return developerService.saveOne(developer);
+    public ResponseEntity<DeveloperDto> saveOne(@Valid @RequestBody DeveloperDto developer) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(developerService.saveOne(developer));
     }
 
     @Operation(summary = "modify a Developer by its id",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content =
             @Content(examples = @ExampleObject(value = ObjectDataExemple.EDIT_EXEMPLE))))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
+            @ApiResponse(responseCode = "202",
                     content = @Content(mediaType = "application/json", examples = @ExampleObject(value = ObjectDataExemple.EDIT_EXEMPLE))),
             @ApiResponse(responseCode = "404", description = "Developer not found",
                     content = @Content(examples = @ExampleObject(value = ObjectDataExemple.NOT_FOUND)))})
     @PutMapping("/{id}")
-    public DeveloperDto putOne(@PathVariable Long id, @Valid @RequestBody DeveloperDto developer) {
-        return developerService.modifyOne(id, developer);
+    public ResponseEntity<DeveloperDto> putOne(@PathVariable Long id, @Valid @RequestBody DeveloperDto developer) {
+        return ResponseEntity.accepted().body(developerService.modifyOne(id, developer));
     }
 
     @Operation(summary = "Delete a Developer by its id")

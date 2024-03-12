@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import static com.canyou.canyou.utils.ConstValues.ONE;
+import static com.canyou.canyou.utils.ConstValues.ZERO;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class DeveloperServiceImplTest {
-    public static final int ZERO = 0;
-    public static final int WANTED_NUMBER_OF_INVOCATIONS = 1;
     @Mock
     DeveloperRepository repository;
     @Mock
@@ -51,7 +51,7 @@ class DeveloperServiceImplTest {
         //perform
         List<DeveloperDto> result = service.getAll();
         //assert
-        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findAll();
+        Mockito.verify(repository, Mockito.times(ONE)).findAll();
         assertEquals(result.size(), devsDTO.size());
         IntStream.range(ZERO, result.size()).forEach(i -> assertOneDev(result.get(i), devsDTO.get(i)));
 
@@ -65,7 +65,7 @@ class DeveloperServiceImplTest {
         //call
         DeveloperDto result = service.getOne(ConstValues.ID);
         //assert
-        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findById(ConstValues.ID);
+        Mockito.verify(repository, Mockito.times(ONE)).findById(ConstValues.ID);
         assertOneDev(result, devsDTO.get(ZERO));
     }
 
@@ -78,7 +78,7 @@ class DeveloperServiceImplTest {
             service.getOne(ConstValues.ID);
             fail("There should throw a RessourceNotFoundException");
         } catch (Exception e) {
-            Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findById(ConstValues.ID);
+            Mockito.verify(repository, Mockito.times(ONE)).findById(ConstValues.ID);
             assertTrue(e instanceof RessourceNotFoundException);
             assertEquals(String.format(ErrorMsg.RESSOURCE_NOT_FOUND_MSG, Developer.class.getSimpleName(), ConstValues.ID), e.getMessage());
         }
@@ -95,7 +95,7 @@ class DeveloperServiceImplTest {
         //call
         DeveloperDto result = service.saveOne(toSave);
         //assert
-        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).save(this.devsEntity.get(ZERO));
+        Mockito.verify(repository, Mockito.times(ONE)).save(this.devsEntity.get(ZERO));
         assertOneDev(result, this.devsDTO.get(ZERO));
     }
 
@@ -111,8 +111,8 @@ class DeveloperServiceImplTest {
         //call
         DeveloperDto result = service.modifyOne(ConstValues.ID, toSave);
         //assert
-        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findById(ConstValues.ID);
-        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).save(this.devsEntity.get(ZERO));
+        Mockito.verify(repository, Mockito.times(ONE)).findById(ConstValues.ID);
+        Mockito.verify(repository, Mockito.times(ONE)).save(this.devsEntity.get(ZERO));
         assertOneDev(result, this.devsDTO.get(ZERO));
     }
 
@@ -126,7 +126,7 @@ class DeveloperServiceImplTest {
         //perform
         List<DeveloperDto> result = service.getDevsByMinimumExperience(ConstValues.YEARS_OF_EXPERIENCES_2);
         //assert
-        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findByYearsOfExperiencesGreaterThanEqual(ConstValues.YEARS_OF_EXPERIENCES_2);
+        Mockito.verify(repository, Mockito.times(ONE)).findByYearsOfExperiencesGreaterThanEqual(ConstValues.YEARS_OF_EXPERIENCES_2);
         assertEquals(devDtoStub.size(), result.size());
         IntStream.range(ZERO, devStub.size()).forEach(i -> assertOneDev(result.get(i), devDtoStub.get(i)));
 
@@ -142,7 +142,7 @@ class DeveloperServiceImplTest {
         //perform
         List<DeveloperDto> result = service.getAvailableDev(Availability.NOW);
         //assert
-        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).findByAvailability(Availability.NOW);
+        Mockito.verify(repository, Mockito.times(ONE)).findByAvailability(Availability.NOW);
         assertEquals(availableDevDtoStub.size(), result.size());
         IntStream.range(ZERO, availableDevStub.size()).forEach(i -> assertOneDev(result.get(i), availableDevDtoStub.get(i)));
     }
@@ -161,7 +161,7 @@ class DeveloperServiceImplTest {
         //perform
         service.deleteOne(ConstValues.ID);
         //assert
-        Mockito.verify(repository, Mockito.times(WANTED_NUMBER_OF_INVOCATIONS)).deleteById(ConstValues.ID);
+        Mockito.verify(repository, Mockito.times(ONE)).deleteById(ConstValues.ID);
     }
 
     /**
