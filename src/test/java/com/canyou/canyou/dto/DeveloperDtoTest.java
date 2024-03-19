@@ -1,6 +1,9 @@
 package com.canyou.canyou.dto;
 
 import com.canyou.canyou.utils.ConstValues;
+import com.canyou.canyou.utils.ErrorMsg;
+import com.canyou.canyou.validators.ExperienceValueValidator;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,17 +15,21 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class) // JUnit 5
 class DeveloperDtoTest {
-    DeveloperDto developerDto;
+    DeveloperDto underTest;
     Validator validator;
+
+
+    final String CONSTRAINT_VIOLATION_NOT_EXIST = "There should NOT HAVE constraints violations !!!";
 
     @BeforeEach
     void setUp() {
-        developerDto = DeveloperDto.builder()
+        underTest = DeveloperDto.builder()
                 .id(ConstValues.ID)
                 .fullName(ConstValues.FULL_NAME)
                 .availability(ConstValues.AVAILABILITY.name())
@@ -36,17 +43,17 @@ class DeveloperDtoTest {
 
     @Test
     void no_constraintsViolation() {
-        var constraintViolations = validator.validate(developerDto);
+        var constraintViolations = validator.validate(underTest);
         System.out.println(constraintViolations);
-        String CONSTRAINT_VIOLATION_NOT_EXIST = "There should NOT HAVE constraints violations !!!";
         assertTrue(constraintViolations.isEmpty(), CONSTRAINT_VIOLATION_NOT_EXIST);
 
     }
 
     @Test
     void all_field_are_empty() {
-        developerDto = new DeveloperDto();
-        this.assertConstraintViolationExist();
+        underTest = new DeveloperDto();
+        var constraintViolations = validator.validate(underTest);
+        assertFalse(constraintViolations.isEmpty());
     }
 
 
@@ -54,7 +61,7 @@ class DeveloperDtoTest {
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n", "\r"})
     void fullName_empty_null_space(String fullName) {
-        developerDto.setFullName(fullName);
+        underTest.setFullName(fullName);
         this.assertConstraintViolationExist();
     }
 
@@ -62,29 +69,31 @@ class DeveloperDtoTest {
     @ValueSource(strings = {"123", "!2", "elhadji1", "el/hadji", "@elhadji"})
     void fullName_containBadValue(String fullName) {
 
-        developerDto.setFullName(fullName);
-        this.assertConstraintViolationExist();
+        underTest.setFullName(fullName);
+        this.assertConstraintViolationExist(ErrorMsg.CAN_NOT_CONTAIN_SPECIAL_CHAR_ERROR_MSG);
     }
 
     @ParameterizedTest(name = "{index} => availability_empty({0})")
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n", "\r"})
     void role_empty(String role) {
-        developerDto.setRole(role);
+        underTest.setRole(role);
         this.assertConstraintViolationExist();
     }
 
     @ParameterizedTest(name = "{index} => role_containBadValue({0})")
     @ValueSource(strings = {"123&", "!2", "soft@engineer"})
     void role_containBadValue(String role) {
-        developerDto.setRole(role);
-        this.assertConstraintViolationExist();
+        underTest.setRole(role);
+        this.assertConstraintViolationExist(ErrorMsg.CAN_NOT_CONTAIN_SPECIAL_CHAR_AND_DIGIT_ERROR_MSG);
     }
 
 
-    @Test
-    void yearsOfExperiences_containBadValue() {
-        fail("Specialities validation should be implemented");
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 100})
+    void yearsOfExperiences_containBadValue(int number) {
+        underTest.setYearsOfExperiences(number);
+        this.assertConstraintViolationExist(ErrorMsg.YEARS_OF_EXPERIENCE_ERROR_MSG);
     }
 
 
@@ -92,8 +101,8 @@ class DeveloperDtoTest {
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n", "\r", "yes", "123", "yup123"})
     void availability_containBadValue(String availability) {
-        developerDto.setAvailability(availability);
-        this.assertConstraintViolationExist();
+        underTest.setAvailability(availability);
+        this.assertConstraintViolationExist(ErrorMsg.AVAILABILITY_ERROR_MSG);
     }
 
     @Test
@@ -107,10 +116,29 @@ class DeveloperDtoTest {
     }
 
 
+//    private void assertConstraintViolationExist() {
+//        var constraintViolations = validator.validate(underTest);
+//        assertFalse(constraintViolations.isEmpty(), "There SHOULD HAVE constraints violations !!!");
+//        assertEquals(constraintViolations.size(), 1);
+//    }
+
     private void assertConstraintViolationExist() {
-        var constraintViolations = validator.validate(developerDto);
-        String CONSTRAINT_VIOLATION_EXISTS = "There SHOULD HAVE constraints violations !!!";
-        assertFalse(constraintViolations.isEmpty(), CONSTRAINT_VIOLATION_EXISTS);
+        var constraintViolations = validator.validate(underTest);
+        assertFalse(constraintViolations.isEmpty(), this.CONSTRAINT_VIOLATION_NOT_EXIST);
+    }
+    private void assertConstraintViolationExist(String expectedMessage) {
+        var constraintViolations = validator.validate(underTest);
+        System.out.println("--------");
+        constraintViolations.forEach(System.out::println);
+        assertEquals(1, constraintViolations.size());
+
+        Optional<ConstraintViolation<DeveloperDto>> first = constraintViolations.stream().findFirst();
+        if (first.isPresent()) {
+            ConstraintViolation<DeveloperDto> error = first.get();
+            assertEquals(expectedMessage, error.getMessage());
+        } else {
+            fail(CONSTRAINT_VIOLATION_NOT_EXIST);
+        }
     }
 
 }

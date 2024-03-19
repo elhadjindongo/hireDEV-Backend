@@ -7,6 +7,7 @@ package com.canyou.canyou.entities;
 
 import com.canyou.canyou.enums.Availability;
 import com.canyou.canyou.utils.ErrorMsg;
+import com.canyou.canyou.validators.AcceptableValueForExperience;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -24,14 +25,15 @@ public class Developer implements Serializable {
     @Id
     @GeneratedValue
     private Long id;
-    @NotBlank(message = ErrorMsg.CAN_NOT_BE_BLANK_ERROR_MSG)
+    @NotBlank(message = ErrorMsg.FULL_NAME_ERROR_MSG)
     @Column(nullable = false)
     private String fullName;
     @NotBlank(message = ErrorMsg.ROLE_ERROR_MSG)
     @Column(nullable = false)
     private String role;
     @Column(length = 2, nullable = false)
-    private int yearsOfExperiences;
+    @AcceptableValueForExperience
+    private Integer yearsOfExperiences;
     @Enumerated(EnumType.STRING)
     private Availability availability;
     private Set<String> specialities;

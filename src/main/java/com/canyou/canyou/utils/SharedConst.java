@@ -11,4 +11,6 @@ public class SharedConst {
 
     public static final String EXPERIENCE_LABEL = "experience";
     public static final String AVAILABILITY_LABEL = "availability";
+    public static final int MAX_EXPERIENCE_VALUE = 100;
+    public static final int MIN_EXPERIENCE_VALUE = 0;
 }
