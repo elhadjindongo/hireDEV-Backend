@@ -8,6 +8,7 @@ package com.canyou.canyou.dto;
 import com.canyou.canyou.utils.ErrorMsg;
 import com.canyou.canyou.utils.SharedConst;
 import com.canyou.canyou.validators.AcceptableValueForExperience;
+import com.canyou.canyou.validators.AcceptableValueForSpecialities;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -39,6 +40,6 @@ public class DeveloperDto implements Serializable {
     @NotNull(message = ErrorMsg.AVAILABILITY_ERROR_MSG)
     private String availability;
 
-    //    @NotBlank(message = ErrorMsg.SPECIALITY_ERROR_MSG) cannot be null or empty
+    @AcceptableValueForSpecialities
     private Set<String> specialities;
 }

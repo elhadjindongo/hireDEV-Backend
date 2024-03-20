@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -104,30 +105,22 @@ class DeveloperDtoTest {
         this.assertConstraintViolationExist(ErrorMsg.AVAILABILITY_ERROR_MSG);
     }
 
-    @Test
-    void specialities_empty() {
-        fail("Specialities validation should be implemented");
+    @ParameterizedTest
+    @NullAndEmptySource
+    void specialities_empty(Set<String> values) {
+        underTest.setSpecialities(values);
+
+        this.assertConstraintViolationExist(ErrorMsg.SPECIALITY_ERROR_MSG);
     }
 
-    @Test
-    void specialities_containBadValue() {
-        fail("Specialities validation should be implemented");
-    }
-
-
-//    private void assertConstraintViolationExist() {
-//        var constraintViolations = validator.validate(underTest);
-//        assertFalse(constraintViolations.isEmpty(), "There SHOULD HAVE constraints violations !!!");
-//        assertEquals(constraintViolations.size(), 1);
-//    }
 
     private void assertConstraintViolationExist() {
         var constraintViolations = validator.validate(underTest);
         assertFalse(constraintViolations.isEmpty(), this.CONSTRAINT_VIOLATION_NOT_EXIST);
     }
+
     private void assertConstraintViolationExist(String expectedMessage) {
         var constraintViolations = validator.validate(underTest);
-        System.out.println("--------");
         constraintViolations.forEach(System.out::println);
         assertEquals(1, constraintViolations.size());
 

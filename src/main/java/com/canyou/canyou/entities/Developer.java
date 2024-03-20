@@ -8,6 +8,7 @@ package com.canyou.canyou.entities;
 import com.canyou.canyou.enums.Availability;
 import com.canyou.canyou.utils.ErrorMsg;
 import com.canyou.canyou.validators.AcceptableValueForExperience;
+import com.canyou.canyou.validators.AcceptableValueForSpecialities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -36,5 +37,6 @@ public class Developer implements Serializable {
     private Integer yearsOfExperiences;
     @Enumerated(EnumType.STRING)
     private Availability availability;
+    @AcceptableValueForSpecialities
     private Set<String> specialities;
 }
