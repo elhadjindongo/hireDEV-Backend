@@ -2,7 +2,6 @@ package com.canyou.canyou.dto;
 
 import com.canyou.canyou.utils.ConstValues;
 import com.canyou.canyou.utils.ErrorMsg;
-import com.canyou.canyou.validators.ExperienceValueValidator;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -66,7 +65,7 @@ class DeveloperDtoTest {
     }
 
     @ParameterizedTest(name = "{index} => fullName_containBadValue({0})")
-    @ValueSource(strings = {"123", "!2", "elhadji1", "el/hadji", "@elhadji"})
+    @ValueSource(strings = {"123", "!2", "elhadji1", "el/hadji", "elh@dji"})
     void fullName_containBadValue(String fullName) {
 
         underTest.setFullName(fullName);
